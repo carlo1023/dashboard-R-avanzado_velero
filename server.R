@@ -16,6 +16,16 @@ shinyServer(function(input, output) {
   output$inicio_textbox <- renderText({
     "Dashboard Campaña Vacunacion-Sarampion_Rubeola_2024"
   })
+  
+  output$foto <-renderImage({
+    list(src ="equipo_velero.png",
+         contentType = "image/png", 
+         width = "100%",
+         height = "100%")
+  },
+  deleteFile = FALSE)
+ #fin de shinyServer
+  
   ### Justificacion ------------------------------------------------------------
   # Cuadro informativo para seccion de Justificacion
   output$justificacion_textbox <- renderText({

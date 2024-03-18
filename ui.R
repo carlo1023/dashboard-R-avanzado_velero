@@ -51,7 +51,12 @@ fluidPage(
                   width = 12,
                   title = "Inicio",
                   textOutput(outputId = "inicio_textbox")
-                )
+                )),
+                fluidRow(
+                  box(width = 6,
+                      height = 400,
+                      imageOutput(outputId = "foto")
+                  )
                 )),
         ### Justificacion ------------------------------------------------------
         tabItem(tabName = "justificacion",
