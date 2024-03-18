@@ -13,22 +13,22 @@ shinyServer(function(input, output) {
   ## Elementos del UI ----------------------------------------------------------
   ### Inicio -------------------------------------------------------------------
   # Cuadro informativo para seccion de Inicio
-  output$inicio_textbox <- renderUI({
-    box(p("Descripción"), width = 12, title = "Inicio")
+  output$inicio_textbox <- renderText({
+    "Descripción"
   })
   ### Justificacion ------------------------------------------------------------
   # Cuadro informativo para seccion de Justificacion
-  output$justificacion_textbox <- renderUI({
-    box(p("Descripción"), width = 12, title = "Justificacion")
+  output$justificacion_textbox <- renderText({
+    "Descripción"
   })
   ### Avance de campaña --------------------------------------------------------
   # Cuadro informativo para seccion de Avance de campaña
-  output$avance_campana_textbox <- renderUI({
-    box(p("Descripción"), width = 12, title = "Avance de Campaña")
+  output$avance_campana_textbox <- renderText({
+    "Descripción"
   })
   ### Georreferenciación -------------------------------------------------------
   # Cuadro informativo para seccion de Georreferenciación
-  output$georreferenciacion_textbox <- renderUI({
-    box(p("Descripción"), width = 12, title = "Georreferenciación")
+  output$georreferenciacion_textbox <- renderText({
+    "Descripción"
   })
 })

@@ -10,13 +10,13 @@
 
 # Inicializar la UI ------------------------------------------------------------
 fluidPage(
-## CSS -------------------------------------------------------------------------
+  ## CSS -------------------------------------------------------------------------
   includeCSS("style.scss"),
-## Inicializar dashboard -------------------------------------------------------
+  ## Inicializar dashboard -------------------------------------------------------
   dashboardPage(
-## Header dashboard ------------------------------------------------------------
+    ## Header dashboard ------------------------------------------------------------
     dashboardHeader(title = paste0(Sys.Date())),
-## Sidebar dashboard -----------------------------------------------------------
+    ## Sidebar dashboard -----------------------------------------------------------
     dashboardSidebar(
       sidebarMenu(
         # Modulo 1: Inicio
@@ -42,21 +42,43 @@ fluidPage(
         )
       )
     ),
-## Cuerpo dashboard ------------------------------------------------------------
+    ## Cuerpo dashboard ------------------------------------------------------------
     dashboardBody(
       tabItems(
         ### Inicio -------------------------------------------------------------
         tabItem(tabName = "inicio",
-                fluidRow(uiOutput(outputId = "inicio_textbox"))),
+                fluidRow(box(
+                  width = 12,
+                  title = "Inicio",
+                  textOutput(outputId = "inicio_textbox")
+                )
+                )),
         ### Justificacion ------------------------------------------------------
         tabItem(tabName = "justificacion",
-                fluidRow(uiOutput(outputId = "justificacion_textbox"))),
+                fluidRow(
+                  box(
+                    width = 12,
+                    title = "Justificacion",
+                    textOutput(outputId = "justificacion_textbox"))
+                )),
         ### Avance de campaña --------------------------------------------------
         tabItem(tabName = "avance_campana",
-                fluidRow(uiOutput(outputId = "avance_campana_textbox"))),
+                fluidRow(
+                  box(
+                    width = 12,
+                    title = "Avance de Campaña",
+                    textOutput(outputId = "avance_campana_textbox")  
+                  )
+                )),
         ### Georreferenciación -------------------------------------------------
         tabItem(tabName = "georreferenciacion",
-                fluidRow(uiOutput(outputId = "georreferenciacion_textbox")))
+                fluidRow(
+                  box(
+                    width = 12,
+                    title = "Georreferenciación",
+                    textOutput(outputId = "georreferenciacion_textbox")
+                  )
+                ))
       )
     )
   )
