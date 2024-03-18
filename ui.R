@@ -54,10 +54,14 @@ fluidPage(
                 )),
                 fluidRow(
                   box(width = 6,
-                      height = 400,
                       imageOutput(outputId = "foto")
+                  ),
+                  box(
+                    width = 6,
+                    title = "Descripción del equipo",
+                    uiOutput(outputId = "descripcion_textbox"
                   )
-                )),
+                ))),
         ### Justificacion ------------------------------------------------------
         tabItem(tabName = "justificacion",
                 fluidRow(

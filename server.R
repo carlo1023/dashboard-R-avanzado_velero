@@ -14,7 +14,7 @@ shinyServer(function(input, output) {
   ### Inicio -------------------------------------------------------------------
   # Cuadro informativo para seccion de Inicio
   output$inicio_textbox <- renderText({
-    "Dashboard Campaña Vacunacion-Sarampion_Rubeola_2024"
+    "Dashboard Campaña Vacunacion Sarampion Rubeola 2024"
   })
   
   output$foto <-renderImage({
@@ -24,6 +24,15 @@ shinyServer(function(input, output) {
          height = "100%")
   },
   deleteFile = FALSE)
+  
+  output$descripcion_textbox <- renderUI({
+    HTML(paste("Kricia Castillo, Costa Rica",
+    "Fernanda Velásquez, Guatemala",
+    "Sandy Santiago, Rep. Dominicana", 
+    "Carlos Hernández, Colombia", 
+    "Marcela Contreras, Chile", sep = "<br/>"))
+  })
+  
  #fin de shinyServer
   
   ### Justificacion ------------------------------------------------------------
