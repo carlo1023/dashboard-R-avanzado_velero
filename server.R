@@ -14,7 +14,7 @@ shinyServer(function(input, output) {
   ### Inicio -------------------------------------------------------------------
   # Cuadro informativo para seccion de Inicio
   output$inicio_textbox <- renderText({
-    "Descripción"
+    "Dashboard Campaña Vacunacion-Sarampion_Rubeola_2024"
   })
   ### Justificacion ------------------------------------------------------------
   # Cuadro informativo para seccion de Justificacion
