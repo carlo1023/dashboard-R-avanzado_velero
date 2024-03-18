@@ -10,7 +10,8 @@
 
 # Inicializar la UI ------------------------------------------------------------
 fluidPage(
-  titlePanel("Dashboard de Campaña de Vacunación de SR 2024"),
+  titlePanel(span("Dashboard de Campaña de Vacunación de SR 2024",img(src="Velero.jpg",height=50))),
+  
   ## CSS -------------------------------------------------------------------------
   includeCSS("style.scss"),
   ## Inicializar dashboard -------------------------------------------------------
