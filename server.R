@@ -47,8 +47,8 @@ shinyServer(function(input, output) {
       group_by(ano) %>% 
       summarise(susceptibles = sum(susceptibles, na.rm = T),cobertura = first(cobertura)) %>% 
       ggplot(aes(x= ano, y= cobertura))+
-      geom_bar(stat = "identity") #+
-      #geom_line(aes)#
+      geom_bar(stat = "identity") +
+      geom_line(aes(y = susceptibles))
   })
   ### Avance de campaña --------------------------------------------------------
   # Cuadro informativo para seccion de Avance de campaña
