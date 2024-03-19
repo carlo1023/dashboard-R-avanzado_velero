@@ -40,6 +40,16 @@ shinyServer(function(input, output) {
   output$justificacion_textbox <- renderText({
     "Descripción"
   })
+  
+  output$grafica_justificacion <- renderPlot({
+    susceptibles_municipio %>% 
+      filter(ano <= 2023) %>% 
+      group_by(ano) %>% 
+      summarise(susceptibles = sum(susceptibles, na.rm = T),cobertura = first(cobertura)) %>% 
+      ggplot(aes(x= ano, y= cobertura))+
+      geom_bar(stat = "identity") #+
+      #geom_line(aes)#
+  })
   ### Avance de campaña --------------------------------------------------------
   # Cuadro informativo para seccion de Avance de campaña
   output$avance_campana_textbox <- renderText({
