@@ -9,20 +9,10 @@ source("requirements.R")
 source("local_settings.R")
 
 con <- DBI::dbConnect(RPostgres::Postgres(),
-                      
-                      
                       host = host,
-                      
-                      
                       dbname = dbname,
-                      
-                      
                       user = user,
-                    
-                      
                       password = password,
-                      
-                    
                       port = 5432 )
 
 rnve <- dbReadTable(con, "rnve") # leer de la base de datos remota a tu compu, como si fuera una base local
