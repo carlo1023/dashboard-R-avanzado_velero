@@ -92,8 +92,27 @@ fluidPage(
                     width = 12,
                     title = "Avance de Campaña",
                     textOutput(outputId = "avance_campana_textbox")  
-                  )
-                )),
+                  )),
+                fluidRow(
+                  box(
+                    width = 12,
+                    selectInput("avance_input_depto",
+                     choices = unique(campana_departamento$departamento_res_mad),
+                     label = "Seleccione departamento",selected = "all"
+                    ))  
+                  ),
+                fluidRow(
+                  box(
+                    width = 6,
+                    title = "Avance de cobertura Departamental",
+                    plotOutput(outputId = "avance_campana_depto")  
+                  ),
+                  box(
+                    width = 6,
+                    title = "Avance de Campaña Nacional",
+                    plotOutput(outputId = "avance_campana_nacional")
+                   
+                  ))),
         ### Georreferenciación -------------------------------------------------
         tabItem(tabName = "georreferenciacion",
                 fluidRow(
@@ -101,9 +120,8 @@ fluidPage(
                     width = 12,
                     title = "Georreferenciación",
                     textOutput(outputId = "georreferenciacion_textbox")
-                  )
-                ))
+                  ))
+                )))
       )
     )
-  )
-)
+  

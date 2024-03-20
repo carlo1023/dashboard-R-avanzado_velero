@@ -27,5 +27,6 @@ pacman::p_load(
   janitor,
   sf,
   readr,
-  cleaner
-)
+  cleaner,
+  plotly
+  )

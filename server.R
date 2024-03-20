@@ -60,6 +60,72 @@ shinyServer(function(input, output) {
   # Cuadro informativo para seccion de Avance de campaña
   output$avance_campana_textbox <- renderText({
     "Descripción"
+    
+    #Gráfico Interactivo
+    
+    campana_departamento_reactive <- reactive({
+      campana_departamento %>% 
+        filter(departamento_res_mad == input$avance_input_depto)
+    })
+    
+    output$avance_campana_depto <- renderPlot({
+      
+      grafico_texto <- ggplot(data = campana_departamento_reactive()) + #aca se agrega la funcion reactive interactiva
+      geom_bar(aes(x = fecha_vac,
+                     y = vacunados, 
+                     text = paste0(
+                       "Departamento ", departamento_res_mad, "<br>"
+                     )
+      ),
+      alpha = 0.5, stat = "identity") +
+      labs(x = "Fecha de vacunación",
+           y = "Número de dosis administradas",
+           title = "Número de dosis administradas por departamento",
+           caption = "Avances de vacunación"
+      ) + 
+      theme_bw()
+    
+    grafico_texto
+    
+    })
+    
+    output$avance_campana_nacional <- renderPlot({
+      
+      grafico_texto <- ggplot(data = campana_departamento) + #aca se agrega la funcion reactive interactiva
+        geom_bar(aes(x = fecha_vac,
+                     y = vacunados, fill = "lightblue", 
+                     text = paste0(
+                       "Departamento ", departamento_res_mad, "<br>"
+                     )
+        ),
+        alpha = 0.5, stat = "identity") +
+        labs(x = "Fecha de vacunación",
+             y = "Número de dosis administradas",
+             title = "Número de dosis administradas por departamento",
+             caption = "Avances de vacunación"
+        ) + 
+        theme_bw() + 
+        theme(legend.position = "none")
+      
+      grafico_texto
+      
+    })
+    
+    ggplotly(grafico_texto, tooltip = "text") %>% 
+      config(
+        locale = "es",
+        displaylogo = FALSE,
+        scrollZoom = TRUE,
+        modeBarButtonsToAdd = c(
+          "drawline", # dibujar líneas rectas
+          "drawopenpath", # dibujar líneas libres
+          "drawcircle", # dibujar círculos
+          "drawrect", #dibujar rectángulos
+          "eraseshape"
+        )
+      )
+    
+    
   })
   ### Georreferenciación -------------------------------------------------------
   # Cuadro informativo para seccion de Georreferenciación

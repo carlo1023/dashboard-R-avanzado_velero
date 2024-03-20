@@ -255,4 +255,88 @@ ggplot(
   theme_classic() +
   theme(text = element_text(size = 16))
 
+#  Cálculo de coberturas avance por departamento ####
+fecha_campana <- as.Date("2024-03-04", "%Y-%m-%d") #se le da el formato
+fecha_campana
+
+fecha_edad_minima <- fecha_campana %m-% months(12) # %m-%: es una función de lubridate, para restar fechas en meses
+fecha_edad_minima
+
+fecha_edad_maxima <- fecha_campana %m-% months(12 * 5) - 1 # cuando resto días puedo dejar el valor directo que en este caso seria el -1
+fecha_edad_maxima
+
+pop_campana_adm1 <- registro_civil %>% 
+  filter(fecha_nac <= fecha_edad_minima) %>% 
+  filter(fecha_nac >= fecha_edad_maxima) %>% 
+  group_by(departamento_res_mad) %>% 
+  tally(name = "poblacion")
+head(pop_campana_adm1)
+
+campana_departamento <- rnve %>% 
+  filter(dosis == "Campaña") %>%
+  tidyr::separate(
+    municipio_res_mad,
+    c("municipio", "departamento_res_mad"),
+    sep = "-") %>%
+  mutate(departamento_res_mad = trimws(departamento_res_mad)) %>%
+  group_by(fecha_vac, departamento_res_mad) %>% 
+  summarise(
+    vacunados = n()
+  ) %>%
+  mutate(cobertura = vacunados / pop_campana_adm1$poblacion * 100) %>% 
+    group_by(departamento_res_mad) %>% 
+  arrange(fecha_vac) %>% 
+  mutate(cobertura_acumulada = cumsum(cobertura))
+head(campana_departamento)
+
+# Calculo cobertura de avance Nacional####
+pop_campana_nacional <- registro_civil%>% 
+  filter(fecha_nac <= fecha_edad_minima) %>% 
+  filter(fecha_nac >= fecha_edad_maxima) %>% 
+  tally(name = "poblacion") %>% 
+  pull(poblacion)
+pop_campana_nacional
+
+campana_nacional <- rnve %>% 
+  filter(dosis == "Campaña") %>% 
+  group_by(fecha_vac) %>% 
+  summarise(
+  vacunados = n()
+  ) %>%
+  mutate(cobertura = vacunados / pop_campana_nacional * 100) %>% 
+  ungroup %>% 
+  arrange(fecha_vac) %>% 
+  mutate(cobertura_acumulada = cumsum(cobertura))
+head(campana_nacional)
+
+# GRÁFICO AVANCE NACIONAL
+
+ggplot(
+  campana_nacional,
+  aes(x = fecha_vac)
+) +
+  # Nombramos los ejes y la leyenda
+  labs(x = "Fecha", y = "Dosis", fill = "Dosis", linetype = "Cobertura", title = "Avance de cobertura a nivel nacional") +
+  # Mostramos el numero de dosis aplicadas cada mes
+  geom_bar(aes(y = vacunados, fill = "Dosis"), stat = "identity", position = "stack") +
+  scale_fill_manual(values = "red") +
+  # Mostramos la cobertura acumulada para cada mes.
+  # NOTA: Los datos de n_dosis alcanzan aprox 7,500, mientras que las 
+  #       coberturas son entre 0 y 100. Por lo tanto, se multiplica el valor de 
+  #       coberturas por 75 para igualar los dos ejes.
+  geom_line(aes(y = cobertura_acumulada * 75), linewidth = 1) +
+  # Modificamos el eje vertical
+  scale_y_continuous(
+    # Ajustamos los limites entre 0 y 1,000 dosis
+    limits = c(0, 7500),
+    # Agregamos un segundo eje horizontal
+    # NOTA: Aplicamos un factor de conversión de 75 para que el eje de cobertura
+    #       alcance 100% cuando el número de dosis alcance 7,500 dosis.
+    sec.axis = sec_axis( trans= ~./75, name = "Cobertura (%)")
+  ) +
+  # Mejoramos la visualización
+  theme_classic() +
+  theme(text = element_text(size = 16))
+
+
 
