@@ -56,6 +56,7 @@ fluidPage(
                 )),
                 fluidRow(
                   box(width = 6,
+                      height = "100%",
                       imageOutput(outputId = "foto")
                   ),
                   box(
@@ -70,16 +71,17 @@ fluidPage(
                   box(
                     width = 12,
                     title = "Justificacion",
-                    textOutput(outputId = "justificacion_textbox"))),
+                    uiOutput(outputId = "justificacion_textbox"))),
                 fluidRow(
                 box(
                   width = 6,
+                  height = "100%",
                   plotOutput(
                     outputId = "grafica_justificacion"
                   )),
                 box(
                   width = 6,
-                  tableOutput(
+                  uiOutput(
                     outputId = "tabla_justificacion"
                   )
                 ))),
