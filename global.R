@@ -229,6 +229,7 @@ head(campana_departamento)
 
 pop_campana_nacional <- sum(pop_campana_adm1$poblacion)
 pop_campana_nacional
+
 campana_nacional <- rnve %>% 
   filter(dosis == "Campaña") %>% 
   group_by(fecha_vac) %>% 
