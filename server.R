@@ -42,13 +42,19 @@ shinyServer(function(input, output) {
   })
   
   output$grafica_justificacion <- renderPlot({
-    susceptibles_municipio %>% 
-      filter(ano <= 2023) %>% 
-      group_by(ano) %>% 
-      summarise(susceptibles = sum(susceptibles, na.rm = T),cobertura = first(cobertura)) %>% 
-      ggplot(aes(x= ano, y= cobertura))+
-      geom_bar(stat = "identity") +
-      geom_line(aes(y = susceptibles))
+    ggplot(
+      campana_nacional,
+      aes(x = fecha_vac)
+    ) +
+      labs(x = "Fecha", y = "Dosis", fill = "Dosis", linetype = "Cobertura") +
+      geom_bar(aes(y = vacunados), stat = "identity", position = "stack") +
+      geom_line(aes(y = cobertura_acumulada * 50), linewidth = 1) +
+      scale_y_continuous(
+        limits = c(0, 7500),
+        sec.axis = sec_axis( trans= ~./50, name = "Cobertura (%)")
+      ) +
+      theme_classic() +
+      theme(text = element_text(size = 16))
   })
   ### Avance de campaña --------------------------------------------------------
   # Cuadro informativo para seccion de Avance de campaña
