@@ -18,6 +18,8 @@ if (!file.exists("data/registro_civil.csv")) {
 registro_civil <- import("data/registro_civil.csv")
 rnve <- import("data/RNVE.csv")
 
+source("intersection_shp_BD_GEO_velero.R")
+source("GEO_velero.R")
 
 # CÁLCULOS ----------------------------------------------------------------
 

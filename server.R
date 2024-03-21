@@ -151,3 +151,58 @@ shinyServer(function(input, output) {
     "Descripción"
   })
 })
+
+output$no_vacunados <- renderLeaflet({
+  
+  breaks <- quantile(datos_map2$no_vac, na.rm = T)
+  
+  pal <- colorBin(c("#24693D","#8CCE7D", "orange" ,"#EACF65", "#BF233C"), reverse = T , domain = datos_map2$lab_novac, bins = breaks)
+  
+  
+  labels_cor <- sprintf("<b>%s", paste("no_vac",datos_map$ADM2_ISON, datos_map2$lab_novac)) %>%
+    lapply(htmltools::HTML)
+  
+  map <- leaflet(datos_map2) %>% 
+    setView(-55.5, -32.5, zoom = 6) %>% 
+    addProviderTiles("OpenStreetMap") %>% 
+    addEasyButton(
+      easyButton(
+        icon = "fa-globe",
+        title = "Zoom Inicial",
+        onClick = JS("function(btn, map){ map.setZoom(6); }")
+      )
+    )
+  #map
+  
+  map <- map %>% 
+    addPolygons(
+      fillColor = ~pal(no_vac),
+      color = "white",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      label = labels_cor,
+      group = "no_vac" )%>% 
+    addLegend(
+      position = "bottomleft",
+      pal = pal,
+      values = ~labels_cor,
+      na.label = "Sin Dato",
+      title = "Número de no vacunados")
+  map <- map %>% 
+    addCircles(
+      data = rnve,
+      lng = ~longitude,
+      lat = ~latitude,
+      group = "Puntos",
+      label = labels_punt,
+      fillOpacity = 0.4) 
+  map <- map %>% 
+    addHeatmap(
+      data = rnve,
+      lng = ~longitude,
+      lat = ~latitude,
+      group = "Calor", 
+      intensity = 2,
+      blur = 50) %>% addLayersControl(overlayGroups = c("Avance", "Puntos", "Calor") , 
+                                      options = layersControlOptions(collapsed = TRUE ))
+})

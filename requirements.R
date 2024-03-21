@@ -28,5 +28,9 @@ pacman::p_load(
   sf,
   readr,
   cleaner,
-  plotly
+  plotly,
+  sf,
+  leaflet,
+  leaflet.extras,
+  shinyWidgets
   )
