@@ -18,7 +18,7 @@ if (!file.exists("data/registro_civil.csv")) {
 registro_civil <- import("data/registro_civil.csv")
 rnve <- import("data/RNVE.csv")
 
-source("intersection_shp_BD_GEO_velero.R")
+#source("intersection_shp_BD_GEO_velero.R")
 source("GEO_velero.R")
 
 # CÁLCULOS ----------------------------------------------------------------
@@ -340,6 +340,45 @@ ggplot(
   # Mejoramos la visualización
   theme_classic() +
   theme(text = element_text(size = 16))
+
+#CAPA DE PUNTOS ####
+
+rc1 <- registro_civil %>% 
+  select(ID, nombre, apellido, sexo, fecha_nac, longitude, latitude, departamento_res_mad, municipio_res_mad, cod_municipio, edad_madre)
+
+rnve_3 <- rnve %>% 
+  select(ID, nombre, apellido, sexo, fecha_nac, longitude, latitude, municipio_res_mad, pais_res_mad, edad_madre, dosis, fecha_vac)
+
+
+rc1_rnve3 <- rc1 %>% 
+  left_join(rnve_3, by = c("ID", "nombre", "apellido", "fecha_nac", "longitude", "latitude", "municipio_res_mad")) %>%
+  pivot_wider(id_cols = c(ID, nombre, apellido, fecha_nac, longitude, latitude, municipio_res_mad,departamento_res_mad),
+              names_from = "dosis",
+              values_from = "fecha_vac") %>% 
+  select(-`NA`) %>% 
+  mutate(Completo = if_all(7:8, ~ !is.na(.x))) %>% 
+  mutate(ano_nac = year(fecha_nac))
+
+fecha_edad_minima <- fecha_campana %m-% months(12)
+fecha_edad_maxima <- fecha_campana %m-% months(12 * 5) - 1 
+
+rc1_rnv_nuevo <-rc1_rnve3 %>% 
+  filter(is.na(Campaña)) %>% 
+  filter(fecha_nac <= fecha_edad_minima) %>% 
+  filter(fecha_nac >= fecha_edad_maxima) %>% 
+  select(fecha_nac, longitude,latitude, municipio_res_mad, departamento_res_mad)
+
+rc1_rnv_nuevo <- rc1_rnv_nuevo %>% 
+  mutate(edad = round(as.numeric(Sys.Date() -rc1_rnv_nuevo$fecha_nac)/365,0))
+
+shp <- st_read("data/Anterior_URYMixed/URY_ADM2_Anterior.shp")
+
+puntos1 <- rc1_rnv_nuevo
+
+# Crear objetos sf transformando la informacion de latitud (y) y longitud (x)
+puntos_sf1 <- st_as_sf(puntos1, # base 
+                       coords = c("longitude", "latitude"), # Columnas 
+                       crs = st_crs(shp))
 
 
 

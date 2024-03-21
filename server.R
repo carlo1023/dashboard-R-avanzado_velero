@@ -150,7 +150,7 @@ shinyServer(function(input, output) {
   output$georreferenciacion_textbox <- renderText({
     "Descripción"
   })
-})
+
 
 output$no_vacunados <- renderLeaflet({
   
@@ -188,21 +188,41 @@ output$no_vacunados <- renderLeaflet({
       values = ~labels_cor,
       na.label = "Sin Dato",
       title = "Número de no vacunados")
-  map <- map %>% 
-    addCircles(
-      data = rnve,
+  map
+  # map <- map %>% 
+  #   addCircles(
+  #     data = rc1_rnv_nuevo %>% head(100),
+  #     lng = ~longitude,
+  #     lat = ~latitude,
+  #     group = "no_vacunados_pts",
+  #     #label = labels_punt,
+  #     fillOpacity = 0.4)
+  #%>% addLayersControl(overlayGroups = c("Avance", "Puntos", "Calor") ,
+  #                                     options = layersControlOptions(collapsed = TRUE ))
+})
+
+output$heat_no_vacunados <- renderLeaflet({
+  
+    map2 <- leaflet(datos_map2) %>% 
+    setView(-55.5, -32.5, zoom = 6) %>% 
+    addProviderTiles("OpenStreetMap") %>% 
+    addEasyButton(
+      easyButton(
+        icon = "fa-globe",
+        title = "Zoom Inicial",
+        onClick = JS("function(btn, map){ map.setZoom(6); }")
+      )
+    )
+  #map
+  
+  map2 <- map2 %>% 
+      addHeatmap(
+      data = rc1_rnv_nuevo,
       lng = ~longitude,
       lat = ~latitude,
-      group = "Puntos",
-      label = labels_punt,
-      fillOpacity = 0.4) 
-  map <- map %>% 
-    addHeatmap(
-      data = rnve,
-      lng = ~longitude,
-      lat = ~latitude,
-      group = "Calor", 
+      group = "Calor",
       intensity = 2,
-      blur = 50) %>% addLayersControl(overlayGroups = c("Avance", "Puntos", "Calor") , 
-                                      options = layersControlOptions(collapsed = TRUE ))
+      blur = 50)
+  map2
+})
 })

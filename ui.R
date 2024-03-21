@@ -123,25 +123,26 @@ fluidPage(
                     title = "Georreferenciación",
                     textOutput(outputId = "georreferenciacion_textbox")
                   )), #acaba fluidRow texto
-                fluidRow(
-                  column(
-                    width = 3,
-                    awesomeRadio(inputId = "mapa", label = "Tipo de capa", choices = c("Calor", "Puntos", "Avance"),
-                                label = "Seleccionar capa",selected = "Puntos"
-                    ))  
-                ),
+                # fluidRow(
+                #   column(
+                #     width = 3,
+                #     awesomeRadio(inputId = "mapa", label = "Tipo de capa", choices = c("Calor", "Puntos", "Avance"),
+                #                 selected = "Puntos"
+                #     ))  
+                # ),
                 fluidRow(
                   box(
                     width = 6,
                     title = "No_vacunados",
-                    leafletOutput(outputId = "No_vacunados")  
+                    leafletOutput(outputId = "no_vacunados")  
                   ),
                   box(
                     width = 6,
-                    title = "Avance de Campaña Nacional",
-                    plotOutput(outputId = "avance_campana_nacional")
-                    
-                )))
+                    title = "Heat_no_vacunados",
+                    leafletOutput(outputId = "heat_no_vacunados")
+                     
+                 )
+                ))
       )
-    )
+    )))
   

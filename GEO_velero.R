@@ -2,7 +2,7 @@
 #source("requirements.R")
 
 # Cargue bases
-# registro_civil <- import("data/registro_civil.csv")
+# registro_civil <- import("data/Registro civil - Uruguay_ajust.csv")
 # source("scripts/create_rnve_db.R")
 # rnve <- import("data/rnve.csv")
 

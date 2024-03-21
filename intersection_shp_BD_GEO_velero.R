@@ -87,3 +87,12 @@ write_csv(registro_civil_ajust, "data/Registro civil - Uruguay_ajust.csv")
 # Remove all unnecessary variables ---------------------------------------------
 # rm(list=setdiff(ls(), c("registro_civil", "live_births")))
 
+#MAPAS DE PUNTOS####
+
+puntos1 <- rc1_rnv_nuevo
+
+# Crear objetos sf transformando la informacion de latitud (y) y longitud (x)
+puntos_sf1 <- st_as_sf(puntos1, # base 
+                      coords = c("longitude", "latitude"), # Columnas 
+                      crs = st_crs(shp))
+
