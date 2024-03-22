@@ -145,7 +145,7 @@ datos_map2 <- full_join(mun, datos_map2,by = "GIS_CODE")
 
 datos_map2 <- datos_map2 %>% 
   mutate(no_vac = case_when((total_vac- total_pob) < 0 ~ 0,
-                            (total_vac- total_pob) >=  0 ~ (total_pob - total_vac),
+                            (total_vac- total_pob) >=  0 ~ ( total_vac- total_pob),
                             TRUE ~ NA)) %>% 
   mutate(lab_novac=ntile(no_vac,4))
   
