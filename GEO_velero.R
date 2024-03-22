@@ -11,7 +11,7 @@
 
 # Con ayuda de la libreria SF podemos añadir un archivo tipo SHP a R
 
-mun <- read_sf("data\\Anterior_URYMixed\\URY_ADM2_Anterior.shp")
+mun <- read_sf("data/Anterior_URYMixed/URY_ADM2_Anterior.shp")
 
 ### visualizacion general ####
 
