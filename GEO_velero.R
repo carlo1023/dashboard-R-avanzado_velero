@@ -38,7 +38,7 @@ poblacion <- registro_civil %>%
   summarise(municipio_res_mad = first(municipio_res_mad), total_pob = n())
 
 sin_vac <- rnve %>% 
-  select(municipio_res_mad) %>% 
+  select(municipio_res_mad,sexo,fecha_vac) %>% 
   group_by(municipio_res_mad) %>% 
   summarise(total_vac = n())
 
@@ -144,8 +144,8 @@ datos_map2 <- full_join(poblacion, sin_vac, by = "municipio_res_mad")
 datos_map2 <- full_join(mun, datos_map2,by = "GIS_CODE")
 
 datos_map2 <- datos_map2 %>% 
-  mutate(no_vac = case_when((total_pob - total_vac) < 0 ~ 0,
-                            (total_pob - total_vac) >=  0 ~ (total_pob - total_vac),
+  mutate(no_vac = case_when((total_vac- total_pob) < 0 ~ 0,
+                            (total_vac- total_pob) >=  0 ~ (total_pob - total_vac),
                             TRUE ~ NA)) %>% 
   mutate(lab_novac=ntile(no_vac,4))
   
@@ -158,6 +158,8 @@ datos_map2 <- datos_map2 %>%
 # Create leaflet 
 
 # Manual breaks for color bins
+
+
 breaks <- quantile(datos_map2$total_vac, na.rm = T)
 
 # para encontrar colores se puede utilizar paginas como https://r-charts.com/es/colores/

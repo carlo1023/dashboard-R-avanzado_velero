@@ -11,12 +11,22 @@
 # Requerimientos ---------------------------------------------------------------
 source("requirements.R")
 
-if (!file.exists("data/registro_civil.csv")) {
+archivos <- file.info("data/rnve.csv")
+
+fecha_creacion <- archivos$mtime
+
+fecha_creacion <- format(fecha_creacion, "%Y-%m-%d")
+
+fecha_creacion <- fecha_creacion[complete.cases(fecha_creacion)]
+
+Sys.Date() > na.omit(fecha_creacion)
+
+if (Sys.Date() > na.omit(fecha_creacion)) {
   source("preprocesamiento.R")
 }
 
 registro_civil <- import("data/registro_civil.csv")
-rnve <- import("data/RNVE.csv")
+rnve <- import("data/rnve.csv")
 
 #source("intersection_shp_BD_GEO_velero.R")
 source("GEO_velero.R")

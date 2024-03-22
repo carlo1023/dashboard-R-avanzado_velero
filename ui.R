@@ -10,6 +10,23 @@
 
 # Inicializar la UI ------------------------------------------------------------
 fluidPage(
+  fluidRow(
+    box(width = 12,
+        background = "red",
+        div(
+          HTML(paste0(
+            '<font color="white"><strong>',
+            "Este tablero es producto del curso avanzado de R organizado por OPS en marzo de 2024.
+    Los datos presentados en este tablero son completamente ficticios y han sido creados 
+    únicamente con fines didácticos. Cualquier similitud con datos reales, personas o 
+    eventos es pura coincidencia y no debe interpretarse como una representación exacta 
+    de la realidad. Este contenido está diseñado para ilustrar conceptos y promover el 
+    aprendizaje a través de ejemplos construidos para este fin.",
+    '</strong></font>'
+          )
+          ))
+    )
+  ),
   titlePanel(span("Dashboard de Campaña de Vacunación de SR 2024",img(src="Velero.jpg",height=50))),
   
   ## CSS -------------------------------------------------------------------------
@@ -52,7 +69,7 @@ fluidPage(
                 fluidRow(box(
                   width = 12,
                   title = "Inicio",
-                  textOutput(outputId = "inicio_textbox")
+                  uiOutput(outputId = "inicio_textbox")
                 )),
                 fluidRow(
                   box(width = 6,
@@ -107,7 +124,7 @@ fluidPage(
                   box(
                     width = 6,
                     title = "Avance de cobertura Departamental",
-                    plotOutput(outputId = "avance_campana_depto")  
+                    plotlyOutput(outputId = "avance_campana_depto")  
                   ),
                   box(
                     width = 6,
@@ -120,16 +137,28 @@ fluidPage(
                 fluidRow(
                   box(
                     width = 12,
-                    title = "Georreferenciación",
+                    title = "Un mapa de calor (heat map, en inglés) es una técnica de visualización de datos que mide la magnitud de un fenómeno en colores en dos dimensiones. La variación del color puede ser por tono o intensidad, haciendo obvia la lectura del fenómeno sobre el espacio que se trata. Existen dos categorías fundamentales de mapas de calor: el mapa de calor de análisis de grupos y el mapa de calor espacial. En un mapa de calor de conglomerados, las magnitudes se disponen en una matriz de tamaño de celda fijo, cuyas filas y columnas son fenómenos y categorías discretos, además la clasificación de filas y columnas es intencional y algo arbitraria, con el objetivo de sugerir los conglomerados o representarlos como descubrimientos a través del análisis estadístico. El tamaño de la celda es arbitrario pero lo suficientemente grande para ser claramente visible. Por el contrario, la posición de una magnitud en un mapa de calor espacial está forzada por la ubicación de la magnitud en ese espacio, y no existe la noción de celdas; se considera que el fenómeno varía continuamente",
                     textOutput(outputId = "georreferenciacion_textbox")
                   )), #acaba fluidRow texto
-                # fluidRow(
-                #   column(
-                #     width = 3,
-                #     awesomeRadio(inputId = "mapa", label = "Tipo de capa", choices = c("Calor", "Puntos", "Avance"),
-                #                 selected = "Puntos"
-                #     ))  
-                # ),
+                fluidRow(
+                  column(
+                    width = 6,
+                    pickerInput(
+                      inputId = "selector_dpto",
+                      label = "Seleccion departamento", 
+                      choices = unique(datos_map2$ADM1_ISON),
+                      options = pickerOptions(container = "body"), 
+                      width = "100%"
+                    )
+                  ),
+                  column(width = 6,
+                         checkboxGroupButtons(
+                           inputId = "edad",
+                           label = "Seleccione edad simple",
+                           choices = c("1","2","3","4","5"),
+                           status = "success", selected = "all"
+                         ))
+                ),
                 fluidRow(
                   box(
                     width = 6,

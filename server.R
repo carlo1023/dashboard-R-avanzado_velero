@@ -13,8 +13,8 @@ shinyServer(function(input, output) {
   ## Elementos del UI ----------------------------------------------------------
   ### Inicio -------------------------------------------------------------------
   # Cuadro informativo para seccion de Inicio
-  output$inicio_textbox <- renderText({
-    "Dashboard Campaña Vacunacion Sarampion Rubeola 2024"
+  output$inicio_textbox <- renderUI({
+    HTML("<p> Este dashboard fue elaborado para monitorización del avance de campaña de vacunación contra Sarampión y Rubéola 2024 en Yuruguay.</p>")
   })
   
   output$foto <-renderImage({
@@ -59,17 +59,26 @@ shinyServer(function(input, output) {
       geom_line(aes(y = cobertura_acumulada * 50, colour = "Cobertura"),  linewidth = 1, linetype= "dashed") +
       labs( 
         title = "Dosis aplicadas acumuladas por dia vs cobertura preliminar",
-        x = "Fecha", 
+        x = "",
         y = "Dosis", 
-        fill = "Dosis") +
+        fill = "", colour = "") +
       scale_y_continuous(
         limits = c(0, 7500),
         sec.axis = sec_axis( trans= ~./50, name = "Cobertura (%)")) +
       theme_minimal() +
-      theme(text = element_text(size = 16))
+      theme(text = element_text(size = 16), legend.position = "bottom")
   })
+  colnames(campana_departamento)
   
   output$tabla_justificacion <- renderUI({
+   campana_departamento <- campana_departamento %>% 
+     mutate(cobertura = round(cobertura, 2),
+            cobertura_acumulada=round(cobertura_acumulada, 2)) %>% 
+     rename("Fecha de vacunación" = "fecha_vac",
+            "Departamento" = "departamento_res_mad",
+            "Vacunados" = "vacunados",
+            "Cobertura" = "cobertura",
+            "Cobertura acumulada" = "cobertura_acumulada")
    
    t <- datatable(campana_departamento)
    t
@@ -77,7 +86,7 @@ shinyServer(function(input, output) {
   ### Avance de campaña --------------------------------------------------------
   # Cuadro informativo para seccion de Avance de campaña
   output$avance_campana_textbox <- renderText({
-    "Descripción"
+    "Descripción"})
     
     #Gráfico Interactivo
     
@@ -86,13 +95,13 @@ shinyServer(function(input, output) {
         filter(departamento_res_mad == input$avance_input_depto)
     })
     
-    output$avance_campana_depto <- renderPlot({
+    output$avance_campana_depto <- renderPlotly({
       
       grafico_texto <- ggplot(data = campana_departamento_reactive()) + #aca se agrega la funcion reactive interactiva
       geom_bar(aes(x = fecha_vac,
                      y = vacunados, 
                      text = paste0(
-                       "Departamento ", departamento_res_mad, "<br>"
+                       "Número de vacunados: ", vacunados, "<br>"
                      )
       ),
       alpha = 0.5, stat = "identity") +
@@ -105,31 +114,7 @@ shinyServer(function(input, output) {
     
     grafico_texto
     
-    })
-    
-    output$avance_campana_nacional <- renderPlot({
-      
-      grafico_texto <- ggplot(data = campana_departamento) + #aca se agrega la funcion reactive interactiva
-        geom_bar(aes(x = fecha_vac,
-                     y = vacunados, fill = "lightblue", 
-                     text = paste0(
-                       "Departamento ", departamento_res_mad, "<br>"
-                     )
-        ),
-        alpha = 0.5, stat = "identity") +
-        labs(x = "Fecha de vacunación",
-             y = "Número de dosis administradas",
-             title = "Número de dosis administradas por departamento",
-             caption = "Avances de vacunación"
-        ) + 
-        theme_bw() + 
-        theme(legend.position = "none")
-      
-      grafico_texto
-      
-    })
-    
-    ggplotly(grafico_texto, tooltip = "text") %>% 
+    ggplotly(grafico_texto, tooltip = "text") %>%
       config(
         locale = "es",
         displaylogo = FALSE,
@@ -143,6 +128,29 @@ shinyServer(function(input, output) {
         )
       )
     
+    })
+    
+    output$avance_campana_nacional <- renderPlot({
+      
+      grafico_texto <- ggplot(data = campana_departamento) + #aca se agrega la funcion reactive interactiva
+        geom_bar(aes(x = fecha_vac,
+                     y = vacunados, 
+                     text = paste0(
+                       "Departamento ", departamento_res_mad, "<br>"
+                     )
+        ),
+        fill= "lightblue",
+        alpha = 0.5, stat = "identity") +
+        labs(x = "Fecha de vacunación",
+             y = "Número de dosis administradas",
+             title = "Número de dosis administradas por departamento",
+             caption = "Avances de vacunación"
+        ) + 
+        theme_bw() + 
+        theme(legend.position = "none")
+      
+      grafico_texto
+    
     
   })
   ### Georreferenciación -------------------------------------------------------
@@ -151,12 +159,17 @@ shinyServer(function(input, output) {
     "Descripción"
   })
 
+  
 
 output$no_vacunados <- renderLeaflet({
   
-  breaks <- quantile(datos_map2$no_vac, na.rm = T)
+  datos_map2 <- datos_map2 %>% 
+    filter(ADM1_ISON%in%input$selector_dpto)
   
-  pal <- colorBin(c("#24693D","#8CCE7D", "orange" ,"#EACF65", "#BF233C"), reverse = T , domain = datos_map2$lab_novac, bins = breaks)
+datos_map2$no_vac <-round(abs(datos_map2$no_vac),0)
+  breaks <- quantile(datos_map2$no_vac, na.rm = T)
+
+  pal <- colorBin(c("#BF233C","#EACF65", "orange" ,"#8CCE7D", "#24693D"), reverse = T , domain = datos_map2$no_vac, bins = breaks)
   
   
   labels_cor <- sprintf("<b>%s", paste("no_vac",datos_map$ADM2_ISON, datos_map2$lab_novac)) %>%
@@ -202,6 +215,9 @@ output$no_vacunados <- renderLeaflet({
 })
 
 output$heat_no_vacunados <- renderLeaflet({
+  
+  rc1_rnv_nuevo <- rc1_rnv_nuevo %>% 
+    filter(edad %in% input$edad)
   
     map2 <- leaflet(datos_map2) %>% 
     setView(-55.5, -32.5, zoom = 6) %>% 
