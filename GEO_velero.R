@@ -160,96 +160,96 @@ datos_map2 <- datos_map2 %>%
 # Manual breaks for color bins
 
 
-breaks <- quantile(datos_map2$total_vac, na.rm = T)
-
-# para encontrar colores se puede utilizar paginas como https://r-charts.com/es/colores/
-
-pal <- colorBin(c("#24693D","#8CCE7D", "orange" ,"#EACF65", "#BF233C"), reverse = T , domain = datos_map2$total_vac, bins = breaks)
-
-# se agregan labels a las capas agregadas
-labels_cor <- sprintf("<b>%s", paste("Avance",datos_map$ADM2_ISON, datos_map$rango_avance)) %>%
-  lapply(htmltools::HTML)
-
-labels_punt <- sprintf(paste("ID caso", rnve$ID))
-
-map <- leaflet(datos_map2) %>% 
-  setView(-55.5, -32.5, zoom = 6) %>% 
-  addProviderTiles("OpenStreetMap") %>% 
-  addEasyButton(
-    easyButton(
-      icon = "fa-globe",
-      title = "Zoom Inicial",
-      onClick = JS("function(btn, map){ map.setZoom(6); }")
-    )
-  )
-#map
-
-map <- map %>% 
-  addPolygons(
-    fillColor = ~pal(total_vac),
-    color = "white",
-    dashArray = "3",
-    fillOpacity = 0.7,
-    label = labels_cor,
-    group = "Avance" )%>% 
-  addLegend(
-    position = "bottomleft",
-    pal = pal,
-    values = ~total_vac,
-    na.label = "Sin Dato",
-    title = "Número de vacunados")
-map <- map %>% 
-  addCircles(
-    data = rnve,
-    lng = ~longitude,
-    lat = ~latitude,
-    group = "Puntos",
-    label = labels_punt,
-    fillOpacity = 0.4) 
-map <- map %>% 
-    addHeatmap(
-      data = rnve,
-      lng = ~longitude,
-      lat = ~latitude,
-      group = "Calor", 
-      intensity = 2,
-      blur = 50) %>% addLayersControl(overlayGroups = c("Avance", "Puntos", "Calor") , 
-                     options = layersControlOptions(collapsed = TRUE ))
-
-map
-
-#rm(map)
-
-# Mapa con filtro ---------------------------------------------------------------------
-
-sexo <- unique(rnve$sexo)
-
-sexo_list <- list()
-  
-for (i in 1:length(sexo)) {
-    
-sexo_list[[i]] <- rnve %>% dplyr::filter(sexo == sexo[i]) 
-  }
-  
-sexo
-  names(sexo_list) <- sexo
-  
-  map2 <- leaflet() %>% addTiles()
-  
-  colores <- c("blue","pink")
-  
-  for (i in 1:length(sexo)) {
-    map2 <- map2 %>% addCircles(data = sexo_list[[i]], 
-                              lat = ~latitude,
-                              lng = ~longitude,
-                              fillOpacity = 1, 
-                              label = ~ID,
-                              popup = ~paste("Edad de la madre", edad_madre), 
-                              group = sexo[i],
-                              color = colores[i])
-  }
-  
-  map2 <- map2 %>% addLayersControl(overlayGroups = sexo, 
-                                  options = layersControlOptions(collapsed = TRUE ))
-  #map2
-
+# breaks <- quantile(datos_map2$total_vac, na.rm = T)
+# 
+# # para encontrar colores se puede utilizar paginas como https://r-charts.com/es/colores/
+# 
+# pal <- colorBin(c("#24693D","#8CCE7D", "orange" ,"#EACF65", "#BF233C"), reverse = T , domain = datos_map2$total_vac, bins = breaks)
+# 
+# # se agregan labels a las capas agregadas
+# labels_cor <- sprintf("<b>%s", paste("Avance",datos_map$ADM2_ISON, datos_map$rango_avance)) %>%
+#   lapply(htmltools::HTML)
+# 
+# labels_punt <- sprintf(paste("ID caso", rnve$ID))
+# 
+# map <- leaflet(datos_map2) %>% 
+#   setView(-55.5, -32.5, zoom = 6) %>% 
+#   addProviderTiles("OpenStreetMap") %>% 
+#   addEasyButton(
+#     easyButton(
+#       icon = "fa-globe",
+#       title = "Zoom Inicial",
+#       onClick = JS("function(btn, map){ map.setZoom(6); }")
+#     )
+#   )
+# #map
+# 
+# map <- map %>% 
+#   addPolygons(
+#     fillColor = ~pal(total_vac),
+#     color = "white",
+#     dashArray = "3",
+#     fillOpacity = 0.7,
+#     label = labels_cor,
+#     group = "Avance" )%>% 
+#   addLegend(
+#     position = "bottomleft",
+#     pal = pal,
+#     values = ~total_vac,
+#     na.label = "Sin Dato",
+#     title = "Número de vacunados")
+# map <- map %>% 
+#   addCircles(
+#     data = rnve,
+#     lng = ~longitude,
+#     lat = ~latitude,
+#     group = "Puntos",
+#     label = labels_punt,
+#     fillOpacity = 0.4) 
+# map <- map %>% 
+#     addHeatmap(
+#       data = rnve,
+#       lng = ~longitude,
+#       lat = ~latitude,
+#       group = "Calor", 
+#       intensity = 2,
+#       blur = 50) %>% addLayersControl(overlayGroups = c("Avance", "Puntos", "Calor") , 
+#                      options = layersControlOptions(collapsed = TRUE ))
+# 
+# map
+# 
+# #rm(map)
+# 
+# # Mapa con filtro ---------------------------------------------------------------------
+# 
+# sexo <- unique(rnve$sexo)
+# 
+# sexo_list <- list()
+#   
+# for (i in 1:length(sexo)) {
+#     
+# sexo_list[[i]] <- rnve %>% dplyr::filter(sexo == sexo[i]) 
+#   }
+#   
+# sexo
+#   names(sexo_list) <- sexo
+#   
+#   map2 <- leaflet() %>% addTiles()
+#   
+#   colores <- c("blue","pink")
+#   
+#   for (i in 1:length(sexo)) {
+#     map2 <- map2 %>% addCircles(data = sexo_list[[i]], 
+#                               lat = ~latitude,
+#                               lng = ~longitude,
+#                               fillOpacity = 1, 
+#                               label = ~ID,
+#                               popup = ~paste("Edad de la madre", edad_madre), 
+#                               group = sexo[i],
+#                               color = colores[i])
+#   }
+#   
+#   map2 <- map2 %>% addLayersControl(overlayGroups = sexo, 
+#                                   options = layersControlOptions(collapsed = TRUE ))
+#   #map2
+# 
